@@ -1,0 +1,460 @@
+/* ===== CSS Variables for Light/Dark Mode ===== */
+:root {
+    /* Light Mode (default) */
+    --bg-primary: #ffffff;
+    --bg-secondary: #fafafa;
+    --bg-input: #fafafa;
+    --border-color: #dbdbdb;
+    --text-primary: #262626;
+    --text-secondary: #8e8e8e;
+    --text-link: #0095f6;
+    --btn-blue: #0095f6;
+    --btn-blue-hover: #1877f2;
+    --btn-disabled: #67b5fa;
+    --btn-create-border: #0095f6;
+    --btn-create-text: #0095f6;
+    --facebook-color: #385185;
+    --divider-color: #dbdbdb;
+    --toast-error: #ed4956;
+    --toast-success: #2ecc71;
+    --meta-color: #8e8e8e;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-primary: #000000;
+        --bg-secondary: #000000;
+        --bg-input: #121212;
+        --border-color: #363636;
+        --text-primary: #f5f5f5;
+        --text-secondary: #a8a8a8;
+        --text-link: #0095f6;
+        --btn-blue: #0095f6;
+        --btn-blue-hover: #1877f2;
+        --btn-disabled: #0064d1;
+        --btn-create-border: #0095f6;
+        --btn-create-text: #0095f6;
+        --facebook-color: #e0f1ff;
+        --divider-color: #363636;
+        --toast-error: #ed4956;
+        --toast-success: #2ecc71;
+        --meta-color: #a8a8a8;
+    }
+}
+
+/* ===== Reset ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+}
+
+a {
+    text-decoration: none;
+    color: var(--text-link);
+}
+
+/* ===== App Container ===== */
+.app {
+    width: 100%;
+    max-width: 420px;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 16px;
+    position: relative;
+}
+
+/* ===== Language Bar ===== */
+.language-bar {
+    padding: 12px 0;
+    text-align: center;
+    width: 100%;
+}
+
+.language-select {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 13px;
+    text-align: center;
+    cursor: pointer;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    padding-right: 15px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238e8e8e'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right center;
+}
+
+/* ===== Instagram Logo ===== */
+.logo-container {
+    margin: 24px 0 36px;
+    display: flex;
+    justify-content: center;
+}
+
+.instagram-logo {
+    width: 72px;
+    height: 72px;
+}
+
+/* ===== Login Form ===== */
+.login-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ===== Input Group ===== */
+.input-group {
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.input-container {
+    position: relative;
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    transition: border-color 0.2s;
+}
+
+.input-container:focus-within {
+    border-color: var(--text-secondary);
+}
+
+.input-container input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 20px 50px 6px 14px;
+    font-size: 15px;
+    color: var(--text-primary);
+    border-radius: 10px;
+}
+
+.input-container label {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: var(--text-secondary);
+    pointer-events: none;
+    transition: all 0.15s ease;
+    transform-origin: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 60px);
+}
+
+.input-container input:focus + label,
+.input-container input:not(:placeholder-shown) + label {
+    top: 12px;
+    transform: translateY(0) scale(0.75);
+    color: var(--text-secondary);
+}
+
+/* Show/Hide Password */
+.toggle-pwd {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: none;
+    padding: 0;
+}
+
+.input-container input:not(:placeholder-shown) ~ .toggle-pwd {
+    display: block;
+}
+
+/* ===== Login Button ===== */
+.btn-login {
+    width: 100%;
+    padding: 14px;
+    margin-top: 14px;
+    border: none;
+    border-radius: 24px;
+    background-color: var(--btn-disabled);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: not-allowed;
+    opacity: 0.7;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+}
+
+.btn-login.active {
+    background-color: var(--btn-blue);
+    opacity: 1;
+    cursor: pointer;
+}
+
+.btn-login.active:hover {
+    background-color: var(--btn-blue-hover);
+}
+
+/* ===== Divider ===== */
+.divider {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin: 22px 0;
+}
+
+.divider .line {
+    flex: 1;
+    height: 1px;
+    background-color: var(--divider-color);
+}
+
+.divider span {
+    padding: 0 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+/* ===== Facebook Login ===== */
+.facebook-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--facebook-color);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px;
+    cursor: pointer;
+}
+
+/* ===== Forgot Password ===== */
+.forgot-link {
+    font-size: 13px;
+    color: var(--text-primary);
+    margin-top: 18px;
+    font-weight: 400;
+}
+
+/* ===== Spacer ===== */
+.spacer {
+    flex: 1;
+}
+
+/* ===== Bottom Section ===== */
+.bottom-section {
+    width: 100%;
+    padding: 16px 0 24px;
+    text-align: center;
+}
+
+.btn-create {
+    width: 100%;
+    padding: 14px;
+    border: 1.5px solid var(--btn-create-border);
+    border-radius: 24px;
+    background: transparent;
+    color: var(--btn-create-text);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    letter-spacing: 0.3px;
+}
+
+.btn-create:hover {
+    background: rgba(0, 149, 246, 0.05);
+}
+
+.meta-logo {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.meta-svg {
+    color: var(--meta-color);
+    fill: var(--meta-color);
+}
+
+/* ===== Modal ===== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-primary);
+    z-index: 100;
+    justify-content: center;
+}
+
+.modal-overlay.show {
+    display: flex;
+}
+
+.modal-header {
+    width: 100%;
+    padding: 12px 0;
+    display: flex;
+    align-items: center;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+}
+
+.login-link-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    padding: 20px 0;
+}
+
+.login-link-text a {
+    font-weight: 600;
+}
+
+/* ===== Toast ===== */
+.toast {
+    position: fixed;
+    bottom: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 2000;
+    transition: bottom 0.3s ease;
+    max-width: 90%;
+    text-align: center;
+    color: #ffffff;
+}
+
+.toast.show {
+    bottom: 30px;
+}
+
+.toast.error {
+    background: var(--toast-error);
+}
+
+.toast.success {
+    background: var(--toast-success);
+}
+
+/* ===== Success Modal ===== */
+.success-card {
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 40px 32px;
+    text-align: center;
+    max-width: 350px;
+    width: 90%;
+    animation: popIn 0.3s ease;
+}
+
+.success-check {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    color: #fff;
+    font-size: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    animation: scaleIn 0.4s ease 0.1s both;
+}
+
+.success-card h2 {
+    font-size: 20px;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.success-card p {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+#successModal {
+    align-items: center;
+    background: rgba(0,0,0,0.6);
+}
+
+@keyframes popIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+}
+
+/* ===== Desktop: show centered card ===== */
+@media (min-width: 500px) {
+    body {
+        background-color: var(--bg-secondary);
+        align-items: center;
+    }
+
+    .app {
+        min-height: auto;
+        max-width: 400px;
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 20px 40px 30px;
+        margin: 40px 0;
+    }
+
+    .modal-overlay .app {
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 20px 40px 30px;
+        margin: 40px auto;
+        min-height: auto;
+    }
+}
